@@ -8,7 +8,7 @@ namespace FriendPipe.Services
 {
     public interface IAuthenticationService
     {
-        Task<SignInResponse> IsAuthenticated(SignInDto request);
-        Task<SignInResponse> RefreshToken(RefreshAccessToken model);
+        Task<RefreshAccessToken> IsAuthenticated(SignInDto request);
+        Task<RefreshAccessToken> RefreshToken(RefreshAccessToken model);
     }
 }

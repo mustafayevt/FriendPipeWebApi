@@ -44,7 +44,6 @@ namespace FriendPipe.Controllers
         {
             //return new string[] { "value1", "value2" };
             var a = await _userManager.GetUserAsync(User);
-
             return Ok(a);
         }
 
@@ -55,11 +54,9 @@ namespace FriendPipe.Controllers
             try
             {
                 var result = await _authService.IsAuthenticated(request);
-                if (result == null) return BadRequest("Wrong Username");
-                if (result.IsSigned)
-                    return Ok(result);
-                return BadRequest("Wrong Password");
+                if (result == null) return BadRequest("Username or Password is Wrong!");
 
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -78,9 +75,8 @@ namespace FriendPipe.Controllers
             
         }
 
-        // helper action
         [HttpPost]
-        [Route("usersignup")]
+        [Route("signup")]
         public async Task<IActionResult> Register([FromBody]UserRegisterDto model)
         {
             var user = new User { UserName = model.Username,Name=model.Name,Surname = model.Surname,Email = model.Email };
@@ -89,22 +85,23 @@ namespace FriendPipe.Controllers
 
             if (result.Succeeded)
             {
-                return Ok();
+                var Token = await _authService.IsAuthenticated(new SignInDto { Password = model.Password, Username = model.Username });
+                return Ok(Token);
             }
 
             return BadRequest();
         }
 
         [HttpPost, Microsoft.AspNetCore.Authorization.Authorize]
+        [Route("logout")]
         public async Task<IActionResult> Revoke()
         {
-            var username = User.Identity.Name;
+            var user = await _userManager.GetUserAsync(User);
 
-            var user = _appDbContext.Users.SingleOrDefault(u => u.UserName == username);
 
             if (user == null) return BadRequest();
 
-            //user.web = null;
+            user.WebRefreshToken = null;
 
             await _appDbContext.SaveChangesAsync();
 

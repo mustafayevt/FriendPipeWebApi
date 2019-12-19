@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using FriendPipeApi.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,7 +14,8 @@ namespace FriendPipe.Models
         public string Content { get; set; }
         [JsonIgnore]
         public virtual User User { get; set; }
-
         public int UserId { get; set; }
+
+        public virtual List<Comment> Comments { get; set; }
     }
 }

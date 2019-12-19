@@ -37,6 +37,10 @@ namespace FriendPipe.Data
                    .HasForeignKey(l => l.FollowedUserId)
                    .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Post>()
+                .HasMany(p => p.Comments)
+                .WithOne(x => x.Post).OnDelete(DeleteBehavior.Cascade);
+
             base.OnModelCreating(builder);
         }
     }

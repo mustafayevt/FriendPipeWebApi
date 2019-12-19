@@ -31,18 +31,18 @@ namespace FriendPipe.Services
             this._signInManager = signInManager;
         }
 
-        public async Task<SignInResponse>IsAuthenticated(SignInDto request)
+        public async Task<RefreshAccessToken>IsAuthenticated(SignInDto request)
         {
             
             
-            var user = appDbContext.Users.SingleOrDefault(u => u.UserName == request.username);
-            if (user == null) return null;
+            var user = appDbContext.Users.SingleOrDefault(u => u.UserName == request.Username);
+            var loggedin = await _signInManager.CheckPasswordSignInAsync(user, request.Password, true);
+            if (user == null || !loggedin.Succeeded) return null;
 
-            var loggedin = await _signInManager.CheckPasswordSignInAsync(user, request.password, true);
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, request.username),
+                new Claim(ClaimTypes.Name, request.Username),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
 
@@ -51,9 +51,9 @@ namespace FriendPipe.Services
                 user.WebRefreshToken = refreshToken;
             appDbContext.SaveChanges();
 
-            return new SignInResponse {IsSigned = loggedin.Succeeded, Token = new RefreshAccessToken { AccessToken = jwtToken, RefreshToken = refreshToken } };
+            return new RefreshAccessToken { AccessToken = jwtToken, RefreshToken = refreshToken };
         }
-        public async Task<SignInResponse> RefreshToken(RefreshAccessToken model)
+        public async Task<RefreshAccessToken> RefreshToken(RefreshAccessToken model)
         {
             var principal = _tokenService.GetPrincipalFromExpiredToken(model.AccessToken);
             var username = principal.Identity.Name;
@@ -66,7 +66,7 @@ namespace FriendPipe.Services
                 await appDbContext.SaveChangesAsync();
             
 
-            return new SignInResponse() { IsSigned = true, Token = new RefreshAccessToken() { AccessToken = newJwtToken, RefreshToken = newRefreshToken} };
+            return  new RefreshAccessToken() { AccessToken = newJwtToken, RefreshToken = newRefreshToken};
         }
     }
 }
