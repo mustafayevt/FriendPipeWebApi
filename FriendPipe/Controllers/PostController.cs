@@ -6,6 +6,7 @@ using FriendPipe.Controllers;
 using FriendPipe.Data;
 using FriendPipe.Models;
 using FriendPipe.Services;
+using FriendPipeApi.Dtos.Post;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -41,11 +42,10 @@ namespace FriendPipeApi.Controllers
 
         [Route("getposts")]
         [HttpGet]
-        public async  Task<IActionResult> Get()
+        public IActionResult Get()
         {
-            var user = await _userManager.GetUserAsync(User);
-            var posts = _appDbContext.Posts.Where(x => x.Id == user.Id).ToList();
-            return Ok(posts);
+            var user =  _userManager.GetUserAsync(User);
+            return Ok(user.Result.Posts.Select(x=>new PostDto() { Content = x.Content,Id=x.Id}));
         }
     }
 }

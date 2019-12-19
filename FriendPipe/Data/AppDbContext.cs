@@ -1,4 +1,5 @@
 ﻿using FriendPipe.Models;
+using FriendPipeApi.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +17,26 @@ namespace FriendPipe.Data
 
         }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<UserFollow> UserFollows { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<User>()
     .HasMany(c => c.Posts)
     .WithOne(e => e.User).OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.Entity<UserFollow>()
+           .HasOne(l => l.SourceUser)
+           .WithMany(a => a.Following)
+           .HasForeignKey(l => l.SourceUserId)
+           .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<UserFollow>()
+                   .HasOne(l => l.FollowedUser)
+                   .WithMany(a => a.Followers)
+                   .HasForeignKey(l => l.FollowedUserId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
             base.OnModelCreating(builder);
         }
     }

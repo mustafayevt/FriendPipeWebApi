@@ -4,14 +4,16 @@ using FriendPipe.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FriendPipeApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191219100218_following4")]
+    partial class following4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,15 +102,11 @@ namespace FriendPipeApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("FollowedUserId");
-
-                    b.Property<int>("SourceUserId");
+                    b.Property<int>("FollowingId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FollowedUserId");
-
-                    b.HasIndex("SourceUserId");
+                    b.HasIndex("FollowingId");
 
                     b.ToTable("UserFollows");
                 });
@@ -231,14 +229,9 @@ namespace FriendPipeApi.Migrations
 
             modelBuilder.Entity("FriendPipeApi.Models.UserFollow", b =>
                 {
-                    b.HasOne("FriendPipe.Models.User", "FollowedUser")
-                        .WithMany("Followers")
-                        .HasForeignKey("FollowedUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("FriendPipe.Models.User", "SourceUser")
+                    b.HasOne("FriendPipe.Models.User", "Following")
                         .WithMany("Following")
-                        .HasForeignKey("SourceUserId")
+                        .HasForeignKey("FollowingId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

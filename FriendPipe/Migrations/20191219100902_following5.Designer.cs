@@ -4,14 +4,16 @@ using FriendPipe.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FriendPipeApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191219100902_following5")]
+    partial class following5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,6 +54,8 @@ namespace FriendPipeApi.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
+                    b.Property<int?>("FollowingId");
+
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
@@ -83,6 +87,8 @@ namespace FriendPipeApi.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FollowingId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
 
@@ -100,15 +106,9 @@ namespace FriendPipeApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("FollowedUserId");
-
-                    b.Property<int>("SourceUserId");
+                    b.Property<int>("UserId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FollowedUserId");
-
-                    b.HasIndex("SourceUserId");
 
                     b.ToTable("UserFollows");
                 });
@@ -229,17 +229,11 @@ namespace FriendPipeApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("FriendPipeApi.Models.UserFollow", b =>
+            modelBuilder.Entity("FriendPipe.Models.User", b =>
                 {
-                    b.HasOne("FriendPipe.Models.User", "FollowedUser")
-                        .WithMany("Followers")
-                        .HasForeignKey("FollowedUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("FriendPipe.Models.User", "SourceUser")
+                    b.HasOne("FriendPipeApi.Models.UserFollow", "Following")
                         .WithMany("Following")
-                        .HasForeignKey("SourceUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("FollowingId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
