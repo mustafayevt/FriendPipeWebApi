@@ -12,10 +12,9 @@ namespace FriendPipe.Models
     {
         public int Id { get; set; }
         public string Content { get; set; }
-        [JsonIgnore]
         public virtual User User { get; set; }
         public int UserId { get; set; }
-
+        public DateTime PostedDate { get; set; } = DateTime.Now;
         public virtual List<Comment> Comments { get; set; }
     }
 }

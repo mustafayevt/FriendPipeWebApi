@@ -45,8 +45,8 @@ namespace FriendPipeApi.Controllers
         public IActionResult Get()
         {
             var user = _userManager.GetUserAsync(User);
-            var result = _postManager.GetFollowingUserPosts(user.Id);
-            result.AddRange(_postManager.GetUserPosts(user.Id));
+            var result = _postManager.GetFollowingUserPosts(user.Result.Id).Select(x => new PostDto { Content = x.Content, Id = x.Id, PostedDate = x.PostedDate }).ToList();
+            result.AddRange(_postManager.GetUserPosts(user.Result.Id).Select(x => new PostDto { Content = x.Content, Id = x.Id, PostedDate = x.PostedDate }));
             return Ok(result);
         }
     }

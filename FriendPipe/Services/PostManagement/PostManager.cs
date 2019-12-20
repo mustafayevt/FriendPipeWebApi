@@ -1,5 +1,6 @@
 ﻿using FriendPipe.Data;
 using FriendPipe.Models;
+using FriendPipeApi.Models;
 using FriendPipeApi.Services.UserFollowManagement;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -38,5 +39,15 @@ namespace FriendPipeApi.Services.PostManagement
             return _appDbContext.Users.FirstOrDefault(x => x.Id == UserId).Posts;
         }
 
+        public List<Comment> GetPostComments(int PostId)
+        {
+            return _appDbContext.Posts.FirstOrDefault(x => x.Id == PostId).Comments;
+        }
+
+        public int AddComment(Comment newComment)
+        {
+            _appDbContext.Comments.Add(newComment);
+            return _appDbContext.SaveChanges();
+        }
     }
 }
