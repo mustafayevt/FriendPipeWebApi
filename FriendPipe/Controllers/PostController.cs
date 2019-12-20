@@ -7,6 +7,7 @@ using FriendPipe.Data;
 using FriendPipe.Models;
 using FriendPipe.Services;
 using FriendPipeApi.Dtos.Post;
+using FriendPipeApi.Services.PostManagement;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -23,21 +24,20 @@ namespace FriendPipeApi.Controllers
     {
         private readonly IAuthenticationService _authService;
         private readonly ITokenService _tokenService;
-        private readonly AppDbContext _appDbContext;
-        private readonly UserManager<User> _userManager;
         private readonly ILogger<PostController> _logger;
+        private readonly IPostManager _postManager;
 
         public PostController(IAuthenticationService authService,
             ITokenService tokenService,
             AppDbContext appDbContext,
             UserManager<User> userManager,
-            ILogger<PostController> logger) : base(appDbContext, userManager)
+            ILogger<PostController> logger,
+            IPostManager postManager) : base(appDbContext, userManager)
         {
             _authService = authService;
             _tokenService = tokenService;
-            _appDbContext = appDbContext;
-            _userManager = userManager;
             _logger = logger;
+            _postManager = postManager;
         }
 
         [Route("getposts")]
@@ -45,7 +45,9 @@ namespace FriendPipeApi.Controllers
         public IActionResult Get()
         {
             var user = _userManager.GetUserAsync(User);
-            return Ok(_appDbContext.UserFollows.Where(x => x.SourceUserId == user.Id).ToList());
+            var result = _postManager.GetFollowingUserPosts(user.Id);
+            result.AddRange(_postManager.GetUserPosts(user.Id));
+            return Ok(result);
         }
     }
 }

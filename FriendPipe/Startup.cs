@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FriendPipe.Data;
 using FriendPipe.Models;
 using FriendPipe.Services;
+using FriendPipeApi.Services.PostManagement;
 using FriendPipeApi.Services.UserFollowManagement;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -63,6 +64,7 @@ namespace FriendPipe
             services.AddScoped<IAuthenticationService, TokenAuthenticationService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserFollowManager, UserFollowManager>();
+            services.AddScoped<IPostManager, PostManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

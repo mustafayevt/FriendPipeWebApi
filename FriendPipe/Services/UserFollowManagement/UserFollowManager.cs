@@ -13,12 +13,10 @@ namespace FriendPipeApi.Services.UserFollowManagement
     public class UserFollowManager : IUserFollowManager
     {
         private readonly AppDbContext _appDbContext;
-        private readonly UserManager<User> _userManager;
 
-        public UserFollowManager(AppDbContext appDbContext, UserManager<User> userManager)
+        public UserFollowManager(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
-            _userManager = userManager;
         }
 
         public int AddUserFollow(int sourceUserId, int followUserId)

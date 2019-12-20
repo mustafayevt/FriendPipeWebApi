@@ -61,7 +61,7 @@ namespace FriendPipeApi.Controllers
         }
         [HttpPost]
         [Route("addfollow")]
-        public IActionResult AdFollow(int followUserId)
+        public IActionResult AddFollow(int followUserId)
         {
             try
             {
