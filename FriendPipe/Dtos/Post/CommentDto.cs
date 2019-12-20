@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace FriendPipeApi.Dtos.Post
 {
-    public class PostDto
+    public class CommentDto
     {
         public int Id { get; set; }
-        public string Content { get; set; }
         public string User { get; set; }
-        public DateTime PostedDate { get; set; }
-        public List<CommentDto> Comments { get; set; }
+        public int PostId { get; set; }
+        public string Content { get; set; }
+        public DateTime CommentDate { get; set; } 
     }
 }

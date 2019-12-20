@@ -85,6 +85,8 @@ namespace FriendPipe
 
             app.UseAuthentication();
 
+            app.UseStaticFiles();
+
             app.UseHttpsRedirection();
             app.UseMvc();
         }

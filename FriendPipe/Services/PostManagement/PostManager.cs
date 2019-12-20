@@ -49,5 +49,10 @@ namespace FriendPipeApi.Services.PostManagement
             _appDbContext.Comments.Add(newComment);
             return _appDbContext.SaveChanges();
         }
+
+        public Post GetPostById(int PostId)
+        {
+            return _appDbContext.Posts.FirstOrDefault(x => x.Id == PostId);
+        }
     }
 }

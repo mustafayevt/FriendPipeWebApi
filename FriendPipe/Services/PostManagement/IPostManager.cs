@@ -11,6 +11,7 @@ namespace FriendPipeApi.Services.PostManagement
     public interface IPostManager
     {
         List<Post> GetFollowingUserPosts(int UserId);
+        Post GetPostById(int PostId);
         List<Post> GetUserPosts(int UserId);
         int AddPost(Post newPost);
         List<Comment> GetPostComments(int PostId);

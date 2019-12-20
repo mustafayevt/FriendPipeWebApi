@@ -10,8 +10,10 @@ namespace FriendPipeApi.Models
     {
         public int Id { get; set; }
         public int UserId { get; set; }
+        public string User { get; set; }
         public virtual Post Post { get; set; }
         public int PostId { get; set; }
         public string Content { get; set; }
+        public DateTime CommentDate { get; set; } = DateTime.Now;
     }
 }
