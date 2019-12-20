@@ -12,9 +12,9 @@ namespace FriendPipe.Controllers
     [ApiController]
     public class MainController:ControllerBase
     {
-        private readonly AppDbContext _appDbContext;
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        protected readonly AppDbContext _appDbContext;
+        protected readonly UserManager<User> _userManager;
+        protected readonly SignInManager<User> _signInManager;
 
         public MainController(AppDbContext appDbContext, UserManager<User> userManager)
         {

@@ -2,6 +2,7 @@
 using FriendPipe.Dtos.Authentication;
 using FriendPipe.Models;
 using FriendPipe.Services;
+using FriendPipeApi.Services.UserFollowManagement;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,25 +25,31 @@ namespace FriendPipe.Controllers
         private readonly AppDbContext _appDbContext;
         private readonly UserManager<User> _userManager;
         private readonly ILogger<AuthenticationController> _logger;
+        private readonly IUserFollowManager _userFollowManager;
 
         public AuthenticationController(IAuthenticationService authService,
             ITokenService tokenService,
             AppDbContext appDbContext,
             UserManager<User> userManager,
-            ILogger<AuthenticationController> logger) : base(appDbContext, userManager)
+            ILogger<AuthenticationController> logger,
+            IUserFollowManager userFollowManager) : base(appDbContext, userManager)
         {
             _authService = authService;
             _tokenService = tokenService;
             _appDbContext = appDbContext;
             _userManager = userManager;
             _logger = logger;
+            _userFollowManager = userFollowManager;
         }
 
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<IEnumerable<string>>> Get()
         {
+            
             //return new string[] { "value1", "value2" };
+            var user = await _userManager.GetUserAsync(User);
+            
             var a = await _userManager.GetUserAsync(User);
             return Ok(a);
         }
@@ -105,7 +112,7 @@ namespace FriendPipe.Controllers
 
             await _appDbContext.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
     }
 }

@@ -40,13 +40,12 @@ namespace FriendPipeApi.Controllers
             _logger = logger;
         }
 
-        //[Route("getposts")]
-        //[HttpGet]
-        //public IActionResult Get()
-        //{
-        //    var user =  _userManager.GetUserAsync(User);
-        //    return Ok(_appDbContext.UserFollows.Where(x=>x.SourceUserId==user.Result.Id).ToList()
-        //              .Where(x=>x.).Select(x=>new PostDto() { Content = x.Content,Id=x.Id}));
-        //}
+        [Route("getposts")]
+        [HttpGet]
+        public IActionResult Get()
+        {
+            var user = _userManager.GetUserAsync(User);
+            return Ok(_appDbContext.UserFollows.Where(x => x.SourceUserId == user.Id).ToList());
+        }
     }
 }
