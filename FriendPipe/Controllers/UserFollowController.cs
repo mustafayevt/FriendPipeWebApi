@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Toya.Dtos.Authentication;
 
 namespace FriendPipeApi.Controllers
 {
@@ -35,8 +36,8 @@ namespace FriendPipeApi.Controllers
         {
             try
             {
-                var user = _userManager.GetUserAsync(User);
-                return Ok(_userFollowManager.GetUserFollowers(user.Result.Id));
+                var user = _userManager.GetUserAsync(User).Result;
+                return Ok(_userFollowManager.GetUserFollowers(user.Id).Select(x=> new UserDto { Email = x.Email,Name = x.Name,Surname = x.Surname,Username= x.UserName}));
             }
             catch (Exception)
             {
@@ -50,8 +51,8 @@ namespace FriendPipeApi.Controllers
         {
             try
             {
-                var user = _userManager.GetUserAsync(User);
-                return Ok(_userFollowManager.GetUserFollowing(user.Result.Id));
+                var user = _userManager.GetUserAsync(User).Result;
+                return Ok(_userFollowManager.GetUserFollowing(user.Id).Select(x => new UserDto { Email = x.Email, Name = x.Name, Surname = x.Surname, Username = x.UserName }));
             }
             catch (Exception)
             {
@@ -61,18 +62,49 @@ namespace FriendPipeApi.Controllers
         }
         [HttpPost]
         [Route("addfollow")]
-        public IActionResult AddFollow(int followUserId)
+        public IActionResult AddFollow(string followUserName)
         {
             try
             {
-                var user = _userManager.GetUserAsync(User);
-                return Ok(_userFollowManager.AddUserFollow(user.Result.Id,followUserId));
+                var user = _userManager.GetUserAsync(User).Result;
+                return Ok(_userFollowManager.AddUserFollow(user.Id, followUserName));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 NotFound();
             }
             return BadRequest();
         }
+
+        [HttpGet]
+        [Route("getrandomuser")]
+        public IActionResult GetRandomUsers(int userCount)
+        {
+            try
+            {
+                var user = _userManager.GetUserAsync(User).Result;
+                return Ok(_userFollowManager.GetRandomUsers(user.Id, userCount).Select(x => new UserDto { Email = x.Email, Name = x.Name, Surname = x.Surname, Username = x.UserName }));
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+        
+        [HttpGet]
+        [Route("getnotfolloweduser")]
+        public IActionResult GetNotFollowedUsers()
+        {
+            try
+            {
+                var user = _userManager.GetUserAsync(User).Result;
+                return Ok(_userFollowManager.GetNotFollowedUsers(user.Id).Select(x => new UserDto { Email = x.Email, Name = x.Name, Surname = x.Surname, Username = x.UserName }));
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+        
     }
 }

@@ -20,6 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 namespace FriendPipe
 {
     public class Startup
@@ -36,7 +37,7 @@ namespace FriendPipe
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDbContext<AppDbContext>(x => x.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("mssql")));
-            services.AddIdentity<User, IdentityRole<int>>()
+            services.AddIdentity<User, IdentityRole<int>>(option => { option.User.RequireUniqueEmail = true; })
                     .AddEntityFrameworkStores<AppDbContext>();
 
             services.AddAuthentication(x =>
@@ -61,6 +62,14 @@ namespace FriendPipe
                         ClockSkew = TimeSpan.Zero
                     };
                 });
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "FriendPipe Api", Version = "v1" });
+            });
+
+
+
             services.AddScoped<IAuthenticationService, TokenAuthenticationService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserFollowManager, UserFollowManager>();
@@ -89,6 +98,11 @@ namespace FriendPipe
 
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
         }
     }
 }

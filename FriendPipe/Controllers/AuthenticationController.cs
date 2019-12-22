@@ -2,6 +2,7 @@
 using FriendPipe.Dtos.Authentication;
 using FriendPipe.Models;
 using FriendPipe.Services;
+using FriendPipeApi.Helpers;
 using FriendPipeApi.Services.UserFollowManagement;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +19,7 @@ namespace FriendPipe.Controllers
 {
     [Route("api/auth")]
     [ApiController]
+
     public class AuthenticationController : MainController
     {
         private readonly IAuthenticationService _authService;
@@ -46,10 +48,10 @@ namespace FriendPipe.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<string>>> Get()
         {
-            
+
             //return new string[] { "value1", "value2" };
             var user = await _userManager.GetUserAsync(User);
-            
+
             var a = await _userManager.GetUserAsync(User);
             return Ok(a);
         }
@@ -79,24 +81,30 @@ namespace FriendPipe.Controllers
             if (newRefreshToken == null) return BadRequest();
 
             return Ok(newRefreshToken);
-            
+
         }
 
         [HttpPost]
         [Route("signup")]
-        public async Task<IActionResult> Register([FromBody]UserRegisterDto model)
+        public async Task<IActionResult> Register([FromBody]UserDto model)
         {
-            var user = new User { UserName = model.Username,Name=model.Name,Surname = model.Surname,Email = model.Email };
+            var user = new User { UserName = model.Username, Name = model.Name, Surname = model.Surname, Email = model.Email };
 
-            var result = await _userManager.CreateAsync(user, model.Password);
-
-            if (result.Succeeded)
+            var emailConfirmed = EmailHelper.IsValidEmail(model.Email);
+            if (!emailConfirmed)
             {
-                var Token = await _authService.IsAuthenticated(new SignInDto { Password = model.Password, Username = model.Username });
-                return Ok(Token);
+                return BadRequest("Email is Invalid");
+            }
+            var passwordConfirmed = await _userManager.CreateAsync(user, model.Password);
+            if (!passwordConfirmed.Succeeded)
+            {
+                return BadRequest(passwordConfirmed.Errors.First().Description);
             }
 
-            return BadRequest();
+
+            var Token = await _authService.IsAuthenticated(new SignInDto { Password = model.Password, Username = model.Username });
+            return Ok(Token);
+
         }
 
         [HttpPost, Microsoft.AspNetCore.Authorization.Authorize]

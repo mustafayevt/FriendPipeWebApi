@@ -1,6 +1,7 @@
 ﻿using FriendPipe.Models;
 using FriendPipeApi.Models;
 using FriendPipeApi.Services.UserFollowManagement;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,8 @@ namespace FriendPipeApi.Services.PostManagement
         List<Post> GetFollowingUserPosts(int UserId);
         Post GetPostById(int PostId);
         List<Post> GetUserPosts(int UserId);
-        int AddPost(Post newPost);
+        EntityEntry<Post> AddPost(Post newPost);
         List<Comment> GetPostComments(int PostId);
-        int AddComment(Comment newComment);
+        EntityEntry<Comment> AddComment(Comment newComment);
     }
 }

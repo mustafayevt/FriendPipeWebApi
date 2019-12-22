@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Toya.Dtos.Authentication
 {
-    public class UserRegisterDto
+    public class UserDto
     {
         public string Username { get; set; }
         public string Password { get; set; }

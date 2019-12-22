@@ -36,8 +36,9 @@ namespace FriendPipe.Services
             
             
             var user = appDbContext.Users.SingleOrDefault(u => u.UserName == request.Username);
+            if (user == null) return null;
             var loggedin = await _signInManager.CheckPasswordSignInAsync(user, request.Password, true);
-            if (user == null || !loggedin.Succeeded) return null;
+            if (!loggedin.Succeeded) return null;
 
 
             var claims = new[]

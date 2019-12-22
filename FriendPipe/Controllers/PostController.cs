@@ -64,7 +64,7 @@ namespace FriendPipeApi.Controllers
             {
                 //var user = _userManager.GetUserAsync(User);
                 var result = _postManager.GetPostById(PostId);
-                var post = new PostDto() { Content = result.Content, Id = result.Id, PostedDate = result.PostedDate, Comments = result.Comments.Select(y => new CommentDto { CommentDate = y.CommentDate, Content = y.Content, User = y.User }).ToList(), User = $"{result.User.Name} {result.User.Surname}"  };
+                var post = new PostDto() { Content = result.Content, Id = result.Id, PostedDate = result.PostedDate, Comments = result.Comments.Select(y => new CommentDto { CommentDate = y.CommentDate, Content = y.Content, User = y.User }).ToList(), User = $"{result.User.Name} {result.User.Surname}" };
                 return Ok(post);
             }
             catch (Exception)
@@ -72,7 +72,7 @@ namespace FriendPipeApi.Controllers
                 return BadRequest();
             }
         }
-        
+
         [Route("myposts")]
         [HttpGet]
         public IActionResult GetUserPost()
@@ -80,14 +80,14 @@ namespace FriendPipeApi.Controllers
             try
             {
                 var user = _userManager.GetUserAsync(User);
-                var result = _postManager.GetUserPosts(user.Result.Id).Select(x => new PostDto { Content = x.Content, Id = x.Id, PostedDate = x.PostedDate, User = $"{x.User.Name} {x.User.Surname}"}).ToList();
+                var result = _postManager.GetUserPosts(user.Result.Id).Select(x => new PostDto { Content = x.Content, Id = x.Id, PostedDate = x.PostedDate, User = $"{x.User.Name} {x.User.Surname}" }).ToList();
                 return Ok(result);
             }
             catch (Exception)
             {
                 return BadRequest();
             }
-        } 
+        }
 
         [Route("userposts")]
         [HttpGet]
@@ -95,7 +95,7 @@ namespace FriendPipeApi.Controllers
         {
             try
             {
-                var result = _postManager.GetUserPosts(UserId).Select(x => new PostDto { Content = x.Content, Id = x.Id, PostedDate = x.PostedDate, User = $"{x.User.Name} {x.User.Surname}"}).ToList();
+                var result = _postManager.GetUserPosts(UserId).Select(x => new PostDto { Content = x.Content, Id = x.Id, PostedDate = x.PostedDate, User = $"{x.User.Name} {x.User.Surname}" }).ToList();
                 return Ok(result);
             }
             catch (Exception)
@@ -106,20 +106,20 @@ namespace FriendPipeApi.Controllers
 
         [Route("addcomment")]
         [HttpPost]
-        public IActionResult AddComment(int PostId,string Comment)
+        public IActionResult AddComment(int PostId, string Comment)
         {
             try
             {
                 var user = _userManager.GetUserAsync(User).Result;
-                var result = _postManager.AddComment(new Models.Comment() { CommentDate = DateTime.Now, Content = Comment, PostId = PostId, UserId = user.Id,User = $"{user.Name} {user.Surname}" });
-                return Ok();
+                var result = _postManager.AddComment(new Models.Comment() { CommentDate = DateTime.Now, Content = Comment, PostId = PostId, UserId = user.Id, User = $"{user.Name} {user.Surname}" });
+                return Ok(new CommentDto { CommentDate = result.Entity.CommentDate, Content = result.Entity.Content, User = result.Entity.User,PostId = result.Entity.PostId, Id = result.Entity.Id });
             }
             catch (Exception)
             {
                 return BadRequest();
             }
         }
-        
+
         [Route("getcomments")]
         [HttpGet]
         public IActionResult GetComments(int PostId)
@@ -143,7 +143,7 @@ namespace FriendPipeApi.Controllers
             {
                 var user = _userManager.GetUserAsync(User).Result;
                 var result = _postManager.AddPost(new Post() { Content = newPost, PostedDate = DateTime.Now, User = user });
-                return Ok(result);
+                return Ok(new PostDto { Content = result.Entity.Content, User = $"{result.Entity.User.Name} {result.Entity.User.Surname}", PostedDate = result.Entity.PostedDate,Id = result.Entity.Id });
             }
             catch (Exception)
             {

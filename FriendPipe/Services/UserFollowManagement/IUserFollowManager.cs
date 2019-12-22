@@ -9,8 +9,10 @@ namespace FriendPipeApi.Services.UserFollowManagement
 {
     public interface IUserFollowManager
     {
-        int AddUserFollow(int sourceUserId, int followUserId);
+        int AddUserFollow(int sourceUserId, string followUserName);
         List<User> GetUserFollowing(int sourceUserId);
         List<User> GetUserFollowers(int userId);
+        List<User> GetRandomUsers(int userId,int userCount);
+        List<User> GetNotFollowedUsers(int userId);
     }
 }
