@@ -39,7 +39,7 @@ namespace FriendPipe
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddDbContext<AppDbContext>(x => x.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("mssql")));
+            services.AddDbContext<AppDbContext>(x => x.UseMySQL(Configuration.GetConnectionString("mysql")));
             services.AddIdentity<User, IdentityRole<int>>(option => { option.User.RequireUniqueEmail = true; })
                     .AddEntityFrameworkStores<AppDbContext>();
 
