@@ -14,11 +14,22 @@ namespace FriendPipe
     {
         public static void Main(string[] args)
         {
+  //          var host = new WebHostBuilder()
+
+  //.UseKestrel()
+
+  //.UseUrls("http://157.230.123.5:80")
+
+  //.UseContentRoot(Directory.GetCurrentDirectory())
+
+  //.UseStartup<Startup>()
+
+  //.Build();
             CreateWebHostBuilder(args).Build().Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+            WebHost.CreateDefaultBuilder(args).UseKestrel()
                 .UseStartup<Startup>();
     }
 }
