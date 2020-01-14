@@ -153,7 +153,7 @@ namespace FriendPipe
             app.UseStaticFiles();
             app.UseCors("CorsPolicy");
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
