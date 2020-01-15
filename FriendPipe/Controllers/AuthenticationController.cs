@@ -88,23 +88,29 @@ namespace FriendPipe.Controllers
         [Route("signup")]
         public async Task<IActionResult> Register([FromBody]UserDto model)
         {
-            var user = new User { UserName = model.Username, Name = model.Name, Surname = model.Surname, Email = model.Email };
-
-            var emailConfirmed = EmailHelper.IsValidEmail(model.Email);
-            if (!emailConfirmed)
+            try
             {
-                return BadRequest("Email is Invalid");
+                var user = new User { UserName = model.Username, Name = model.Name, Surname = model.Surname, Email = model.Email };
+
+                var emailConfirmed = EmailHelper.IsValidEmail(model.Email);
+                if (!emailConfirmed)
+                {
+                    return BadRequest("Email is Invalid");
+                }
+                var passwordConfirmed = await _userManager.CreateAsync(user, model.Password);
+                if (!passwordConfirmed.Succeeded)
+                {
+                    return BadRequest(passwordConfirmed.Errors.First().Description);
+                }
+
+                var Token = await _authService.IsAuthenticated(new SignInDto { Password = model.Password, Username = model.Username });
+                return Ok(Token);
             }
-            var passwordConfirmed = await _userManager.CreateAsync(user, model.Password);
-            if (!passwordConfirmed.Succeeded)
+            catch (Exception ex)
             {
-                return BadRequest(passwordConfirmed.Errors.First().Description);
+                return BadRequest("An Error Has Occured");
             }
-
-
-            var Token = await _authService.IsAuthenticated(new SignInDto { Password = model.Password, Username = model.Username });
-            return Ok(Token);
-
+            
         }
 
         [HttpPost, Microsoft.AspNetCore.Authorization.Authorize]
