@@ -27,7 +27,7 @@ namespace FriendPipeApi.Services.UserFollowManagement
 
         public List<User> GetNotFollowedUsers(int userId)
         {
-            var result = _appDbContext.Users.Where(x => (x.Followers.FirstOrDefault(y => y.SourceUserId != userId) != null && x.Id != userId)).ToList();
+            var result = _appDbContext.Users.Where(x => (x.Followers.FirstOrDefault(y => y.SourceUserId == userId) == null && x.Id != userId)).ToList();
             return result;
         }
 
